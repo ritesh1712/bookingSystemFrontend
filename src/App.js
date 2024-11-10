@@ -1,24 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import Signup from './pages/Signup';
+import Signin from './pages/Signin';
+import Navbar from './components/Navbar';
+import AvailabilityForm from './components/AvailabilityForm';
+import { AuthProvider } from './contextApi/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
+import { UserProvider } from './contextApi/userContext';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <UserProvider>
+        <Router>
+          <Navbar />
+          <div className="flex min-h-screen bg-gray-100">
+            <Sidebar>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/signin" element={<Signin />} />
+
+                {/* Private Routes */}
+                <Route element={<PrivateRoute />}>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/setAvailability" element={<AvailabilityForm title={'Set Availability'} />} />
+                  <Route path="/profile" element={<Profile />} />
+                </Route>
+              </Routes>
+            </Sidebar>
+          </div>
+        </Router>
+      </UserProvider>
+    </AuthProvider>
   );
 }
 
